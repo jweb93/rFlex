@@ -56,3 +56,44 @@ pip install requests
 * pip freeze : Para listar dependencias instaladas
 * pip freeze > requirements.txt : para generar un txt con la lista de dependencias instaladas y su versión
 * pip install -r requirements.txt : para instalar las dependencias del archivo requirements
+
+# Directorios
+
+## BUK
+* cliente: consulta el api buk para crear un excel con la nómina de trabajadores
+* areas: consulta el api buk para crear un excel con las áreas, id área, centro costo, departamentos y divisiones
+* cargos: consulta el api buk para crear un excel con los roles (CARGOS) y su ID
+
+Para cada nuevo cliente se debe:
+1. Copiar estos 3 archivos
+2. Renombrar al nombre del cliente
+3. Actuaizar token y URL
+4. Actualizar el nombre con que se generarán los excel's
+
+Nota:
+* Cada archivo se genera con la fecha de hoy. Para generar nuevamente un archivo se debe borrar el de la fecha actual o bien cambiar su nombre para que no entre en conflicto con el nuevo archivo.
+
+## PMO
+* nombre_archivo
+
+Para usar:
+1. Generar token Asana y actualizar el archivo python (sólo 1 vez por nuevo usuario rFlex a cargo de esta labor)
+2. Actualizar nombre proyecto 
+3. Cada vez que se genera un nuevo cliente, se debe incluir en el listado de abreviaturas
+
+## BBDD
+
+### Borrado de permiso_tmp desactualizado y trabajador vigente
+¿Cómo saber que permisos BUK se borraron o editaron?
+Cada día el importador consulta el 100% de los permisos buk.
+Por cada registro busca si ya existe en rFlex (su id en el meta). Si no existe lo crea. Si existe lo actualiza (update = now()).
+Entonces, todos los permisos que no se actualizaron significa que fueron borrados o bien al trabajador se le dió la baja en buk.
+No sería correcto borrar todos los permisos desactualizados ya que pueden ser de trabajadores desvinculados y no queremos que en planillas rFlex del pasado desaparezcan sus permisos. Lo correcto es borrar sólo los permisos desactualizados del personal vigente (rut en tabla ALTA).
+
+El archivo _ _ _ realiza justamente esta labor de borrado.
+
+### Cambio nombre CC's (idealmente abordar con procedimiento almacenado)
+Existen nombres de CC que no ayudan a la gestión de nómina del cliente usando rFlex. En estos casos se define un nombre más apropiado y se actualiza la tabla Centro de Costo. Al día siguiente el comando importador de ALTA revierte los cambios y es necesario nuevamente el cambio de nombre.
+
+### Enrolamiento GPS MEDS
+
